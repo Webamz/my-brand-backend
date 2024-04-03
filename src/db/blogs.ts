@@ -1,20 +1,27 @@
 import mongoose from 'mongoose';
 
+const CommentsSchema = new mongoose.Schema({
+  commenter: { type: String, required: true },
+  content: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now }
+});
+
+
 const BlogsSchema = new mongoose.Schema({
-  email: { type: String, required: true },
-  blogname: { type: String, required: true },
-  authentication: {
-    password: { type: String, required: true, select: false },
-    salt: { type: String, select: false },
-    sessionToken: { type: String, select: false },
-  },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  content: { type: String, required: true },
+author: { type: String, required: true },
+timestamp: { type: Date, default: Date.now },
+    comments: [CommentsSchema],
+  commentCount: { type: Number, default: 0 }
+
 });
 
 export const BlogsModel = mongoose.model('Blogs', BlogsSchema);
 
 export const getBlogs = () => BlogsModel.find();
-export const getBlogByEmail = (email: string) => BlogsModel.findOne({ email });
-export const getBlogBySessionToken = (sessionToken: string) => BlogsModel.findOne({ 'authentication.sessionToken': sessionToken });
+export const getBlogByTitle = (title: string) => BlogsModel.findOne({ title });
 export const getBlogById = (id: string) => BlogsModel.findById(id);
 export const createBlog = (values: Record<string, any>) => new BlogsModel(values).save().then((blog) => blog.toObject());
 export const deleteBlogById = (id: string) => BlogsModel.findOneAndDelete({ _id: id });
