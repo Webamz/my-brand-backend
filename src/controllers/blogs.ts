@@ -86,3 +86,20 @@ export const updateBlog = async (req: express.Request, res: express.Response) =>
     return res.sendStatus(500);
   }
 }
+
+export const getBlog = async (req: express.Request, res: express.Response) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await getBlogById(id);
+
+    if (!blog) {
+      return res.sendStatus(404);
+    }
+
+    return res.status(200).json(blog);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}
