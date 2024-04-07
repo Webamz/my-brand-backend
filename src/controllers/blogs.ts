@@ -1,105 +1,129 @@
-import express from "express"
-import { getBlogByTitle, getBlogs, createBlog, deleteBlogById, getBlogById } from "../db/blogs"
+import { Request, Response } from "express";
+import Blog from '../Models/blogs'
+import { uploads } from "../middlewares/multerUpload";
+import { uploadImageToCloudinary } from "../middlewares/cloudinary";
 
-export const getAllBlogs = async (req: express.Request, res: express.Response) => {
-    try {
-        const blogs = await getBlogs()
 
-        return res.status(200).json(blogs)
-    } catch (error) {
-        console.log(error)
-        return res.sendStatus(500)
+// creating a new blog
+export const createBlog = async (req: Request, res: Response) => {
+  try {
+    // check if a blog exists with such a title
+    const existingBlog = await Blog.findOne({ title: req.body.title })
+    if (existingBlog) {
+      return res.status(400).json({ error: 'Blog with this title already exists' })
     }
+
+    // if no existing blog
+    uploads.single('file')(req, res, async (err: any) => {
+      if (err) {
+        console.error('Error uploading the file: ', err)
+        return res.status(500).json({error: 'Failed to upload the file'})
+      }
+
+      const imageResult = req.file ? await uploadImageToCloudinary(req.file) : null
+      
+      const newBlog = new Blog({
+        ...req.body,
+        image: imageResult||null
+      })
+
+      await newBlog.save()
+
+      res.status(201).json({ message: 'Blog created successfully', newBlog})
+    })
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Failed to create the blog'})
+  };
 }
 
-export const createNewBlog = async (req: express.Request, res: express.Response) => {
+
+//deleting a blog
+export const deleteBlog = async (req: Request, res: Response) => {
   try {
-    const { title, description, content, author } = req.body;
-
-    if (!title || !description || !content || !author) {
-      return res.sendStatus(400);
+    const deletedBlog = await Blog.deleteOne({ _id: req.params.id })
+    
+    if (deletedBlog.deletedCount === 0) {
+      return res.status(404).json({ error: 'Blog not found'})
     }
 
-    const existingBlog = await getBlogByTitle(title);
-  
-    if (existingBlog) {
-      return res.sendStatus(400);
-    }
-
-    const blog = await createBlog({ title, description, content, author });
-
-    return res.status(200).json(blog).end();
+    res.status(200).send("Blog successfully deleted")
   } catch (error) {
-    console.log(error);
-    return res.sendStatus(500);
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
 
-export const deleteBlog = async (req: express.Request, res: express.Response) => {
-    try {
-        const { id } = req.params
+
+//updating a blog
+export const updateBlog = async (req: Request, res: Response) => {
+  try {
+    uploads.single('file')(req, res, async (err: any) => {
+      if (err) {
+        console.error('Error uploading the image: ', err);
+        return res.status(500).json({ error: "Failed to upload the image"})
+      }
+
+      try {
+        const blog = await Blog.findById(req.params.id)
+
+        if (!blog) {
+          return res.status(404).json({ error: 'Blog not found' });
+        }
         
-        const deletedUser = await deleteBlogById(id)
+        blog.title = req.body.title || blog.title;
+        blog.description = req.body.description || blog.description;
+        blog.content = req.body.content || blog.content
 
-        return res.json(deletedUser)
+        if (req.file) {
+          const fileResult = await uploadImageToCloudinary(req.file)
+          blog.image = fileResult
+        }
 
-    } catch (error) {
-        console.log(error)
-        return res.sendStatus(500)
-    }
+        const updatedBlog = await blog.save()
+
+        res.status(200).json({ message: 'Blog Updated Successfully!', updatedBlog });
+
+      } catch (error) {
+        console.error('Error updating the blog:', err);
+        res.status(500).json({ error: 'Failed to update the blog' });
+      }
+    })
+    
+  } catch (error) {
+    console.error('Error updating blog:', error);
+    res.status(500).json({ error: 'Failed to update the blog' });
+  }
 }
 
 
-export const updateBlog = async (req: express.Request, res: express.Response) => {
+//getting all the blogs
+export const getAllBlogs = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const { title, description, content, author } = req.body;
+    const blogs = await Blog.find(req.body)
+    res.status(200).send(blogs)
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error)
+    
+  }
+}
 
-    if (!title && !description && !content && !author) {
-      return res.sendStatus(400);
-    }
 
-    const blog = await getBlogById(id);
+//getting one blog
+export const getOneBlog = async (req: Request, res: Response) => {
+  try {
+    const blog = await Blog.findOne({ _id: req.params.id })
     
     if (!blog) {
-      return res.sendStatus(404);
+      return res.status(404).json({error:'Blog not found'})
     }
-
-    if (title) {
-      blog.title = title;
-    }
-    if (description) {
-      blog.description = description;
-    }
-    if (content) {
-      blog.content = content;
-    }
-    if (author) {
-      blog.author = author;
-    }
-
-    await blog.save();
-
-    return res.status(200).json(blog).end();
+    res.status(200).send(blog)
+    
   } catch (error) {
-    console.log(error);
-    return res.sendStatus(500);
-  }
-}
-
-export const getBlog = async (req: express.Request, res: express.Response) => {
-  try {
-    const { id } = req.params;
-
-    const blog = await getBlogById(id);
-
-    if (!blog) {
-      return res.sendStatus(404);
-    }
-
-    return res.status(200).json(blog);
-  } catch (error) {
-    console.log(error);
-    return res.sendStatus(500);
+    console.error(error);
+    res.status(500).json({error: 'Internal Server Error'})
+    
   }
 }
