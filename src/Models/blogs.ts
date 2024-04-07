@@ -4,8 +4,7 @@ interface BlogInt {
   title: string,
   description: string,
   content: string,
-  image: string,
-  createdAt: Date
+  image: string
 }
 
 const BlogSchema = new Schema<BlogInt>({
@@ -25,10 +24,6 @@ const BlogSchema = new Schema<BlogInt>({
     type: String,
     required: true
   },
-  createdAt: {
-    type: Date,
-    default: Date.now()
-  },
-})
+}, { timestamps: true});
 
 export default model<BlogInt>('Blog', BlogSchema)
