@@ -5,14 +5,19 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import router from './router/route'
+import router from './router/routes';
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const app = express()
 
 app.use(cors({
-    credentials: true,
-}))
+    origin: 'http://localhost:5000',
+    credentials: true
 
+}))
+app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -23,12 +28,18 @@ server.listen(3000, () => {
     console.log('Server is running on http://localhost:3000/')
 })
 
-const MONGO_URL = 'mongodb+srv://christian:christian@cluster0.xyvsznm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
-mongoose.Promise = Promise;
-mongoose.connect(MONGO_URL);
-mongoose.connection.on('error', (error: Error) => {
-    console.log(error);
-});
+// mongoose.Promise = Promise;
+// mongoose.connect(MONGO_URL);
+// mongoose.connection.on('error', (error: Error) => {
+//     console.log(error);
+// });
 
-app.use('/', router())
+
+mongoose.connect(process.env.MONGO_URL as string, {})
+    .then(result => console.log('database connected'))
+    .catch(err => console.log(err))
+
+
+
+app.use('/api', router)
