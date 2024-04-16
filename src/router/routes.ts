@@ -7,6 +7,7 @@ import QuerryController from "../controllers/querriesController";
 import UserController from "../controllers/usersController";
 import { isAdmin, isUser } from "../middleware/isAuthorized";
 import ProjectsController from "../controllers/projectsController";
+import docsRouter from "../documentation/swagger";
 
 
 const router = Router()
@@ -33,14 +34,14 @@ router.put("/blogs/update/:id", middleware,isAdmin,BlogController.updateBlog);
 router.get('/blogs/:blogId/comments',CommentController.getCommentsByBlogId)
 router.post('/blogs/:blogId/comments/create',CommentController.createComment);
 router.get('/comment/getOne/:id',middleware,isAdmin, CommentController.getCommentById);
-router.delete('/comment/delete/:id',middleware,isUser, CommentController.deleteComment);
+router.delete('/comment/delete/:id',middleware,isAdmin, CommentController.deleteComment);
 router.get('/comments/All', middleware,isAdmin,CommentController.getAllComments);
 
 
 //likes
 router.post('/like/create', LikeController.createLike);
 router.get('/like/get/:id', LikeController.getLikeById);
-router.delete('/like/delete/:id',middleware,isUser||isAdmin, LikeController.deleteLike);
+router.delete('/like/delete/:id',middleware,isAdmin, LikeController.deleteLike);
 router.get('/likes/all',middleware,isAdmin, LikeController.getAllLikes);
 
 //queries
@@ -57,5 +58,7 @@ router.post("/projects/create",middleware,isAdmin, ProjectsController.createProj
 router.delete("/projects/delete/:id", middleware,isAdmin,ProjectsController.deleteProject);
 router.put("/projects/update/:id",middleware,isAdmin, ProjectsController.updateProject);
 
+
+router.use("/docs",docsRouter );
 
 export default router
