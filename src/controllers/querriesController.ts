@@ -40,7 +40,7 @@ export const createQuerry = async (req: Request, res: Response) => {
       to: email,
       subject: "Email received",
       text: `Hello ${firstname} ${lastname},
-            Greeting from Christian Iradukunda,\n
+            \nGreetings from Christian Iradukunda,\n
             \nYou just contacted through my website 'MYBRAND' and your message/email has been received.
             \nWe will contact you shortly.
             \nBest regards,
