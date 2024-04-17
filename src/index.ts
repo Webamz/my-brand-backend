@@ -22,7 +22,7 @@ app.use(
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.use(cookieParser());
-app.use(bodyParser.json());
+app.use(express.json());
 
 const server = http.createServer(app);
 
