@@ -84,6 +84,7 @@ export const updateQuerry = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Querry not found" });
     }
 
+    console.log('The whole body: ', req.body)
     console.log('The review value from req: ', req.body.review)
     querry.firstname = querry.firstname;
     querry.lastname = querry.lastname;
