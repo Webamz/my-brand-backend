@@ -14,11 +14,16 @@ export const middleware = (
   next: NextFunction
 ) => {
   try {
-    if (!req.cookies || !req.cookies.token) {
-      throw new Error("Token not found");
+    const header = req.headers["authorization"];
+    const token = header && header.split(" ")[1];
+
+    if (!header) {
+      throw new Error("Authorization header not found");
     }
 
-    const token = req.cookies.token;
+    if (!token) {
+      throw new Error("Token not found");
+    }
 
     const decodedToken = jwt.verify(
       token,
