@@ -84,12 +84,14 @@ export const updateQuerry = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Querry not found" });
     }
 
+    console.log('The review value from req: ', req.body.review)
     querry.firstname = querry.firstname;
     querry.lastname = querry.lastname;
     querry.email = querry.email;
     querry.mobile = querry.mobile;
     querry.message = querry.message;
     querry.review = req.body.review || querry.review;
+
     const updatedQuerry = await querry.save();
 
     return res
