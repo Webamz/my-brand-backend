@@ -48,7 +48,8 @@ router.get('/likes/all',middleware,isAdmin, LikeController.getAllLikes);
 router.get("/querries/all",middleware,isAdmin, QuerryController.getAllQuerry);
 router.get("/querries/find/:id", middleware,isAdmin,QuerryController.getOneQuerry);
 router.post("/querries/create",QuerryController.createQuerry);
-router.delete("/querries/delete/:id", middleware,isAdmin,QuerryController.deleteQuerry);
+router.delete("/querries/delete/:id", middleware, isAdmin, QuerryController.deleteQuerry);
+router.put("/querries/update/:id", middleware,isAdmin,QuerryController.updateQuerry);
 
 
 //projects
