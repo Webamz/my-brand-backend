@@ -15,8 +15,8 @@ const port = process.env.PORT;
 
 app.use(
   cors({
-    // origin: "https://my-brand-christian.netlify.app",
-    origin: "http://localhost:5000",
+    origin: "https://my-brand-christian.netlify.app",
+    // origin: "http://localhost:5000",
     credentials: true,
   })
 );

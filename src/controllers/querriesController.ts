@@ -42,7 +42,7 @@ export const createQuerry = async (req: Request, res: Response) => {
       text: `Hello ${firstname} ${lastname},
             \nGreetings from Christian Iradukunda,\n
             \nYou just contacted through my website 'MYBRAND' and your message/email has been received.
-            \nWe will contact you shortly.
+            \nWe will contact you soon.
             \nBest regards,
             \nChristian Iradukunda`,
     };
@@ -84,8 +84,6 @@ export const updateQuerry = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Querry not found" });
     }
 
-    console.log('The whole body: ', req.body)
-    console.log('The review value from req: ', req.body.review)
     querry.firstname = querry.firstname;
     querry.lastname = querry.lastname;
     querry.email = querry.email;
