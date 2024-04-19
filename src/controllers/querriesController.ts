@@ -38,7 +38,7 @@ export const createQuerry = async (req: Request, res: Response) => {
     let mailOptions2 = {
       from: process.env.EMAIL,
       to: email,
-      subject: "Email received",
+      subject: "Message received",
       text: `Hello ${firstname} ${lastname},
             \nGreetings from Christian Iradukunda,\n
             \nYou just contacted through my website 'MYBRAND' and your message/email has been received.
