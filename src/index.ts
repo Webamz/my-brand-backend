@@ -14,11 +14,11 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(
-  cors({
-    origin: "https://my-brand-christian.netlify.app",
-    // origin: "http://localhost:5000",
-    credentials: true,
-  })
+  // cors({
+  //   origin: "https://my-brand-christian.netlify.app",
+  //   // origin: "http://localhost:5000",
+  //   credentials: true,
+  // })
 );
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
@@ -38,3 +38,5 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use("/api/V1", router);
+
+export default app
