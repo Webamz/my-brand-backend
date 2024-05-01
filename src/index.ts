@@ -5,8 +5,8 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
 import router from "./router/routes";
-import mongoose from 'mongoose'
-import dotenv from 'dotenv'
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -14,11 +14,11 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(
-  // cors({
-  //   origin: "https://my-brand-christian.netlify.app",
-  //   // origin: "http://localhost:5000",
-  //   credentials: true,
-  // })
+  cors({
+    // origin: "https://my-brand-christian.netlify.app",
+    origin: "*",
+    credentials: true,
+  })
 );
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
@@ -31,7 +31,6 @@ server.listen(port, () => {
   console.log(`App is running on port ${port}`);
 });
 
-
 mongoose
   .connect(process.env.MONGO_URL as string, {})
   .then((result) => console.log("database connected"))
@@ -39,4 +38,4 @@ mongoose
 
 app.use("/api/V1", router);
 
-export default app
+export default app;
