@@ -16,8 +16,9 @@ const port = process.env.PORT;
 app.use(
   cors({
     // origin: "https://my-brand-christian.netlify.app",
-    origin: 'http://localhost:3000',
-  credentials: true
+    // origin: 'http://localhost:3000',
+    origin: 'https://christian-my-brand.netlify.app/',
+    credentials: true
   })
 );
 app.use(express.urlencoded({ extended: false }));
