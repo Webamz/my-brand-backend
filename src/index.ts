@@ -17,7 +17,7 @@ app.use(
   cors({
     // origin: "https://my-brand-christian.netlify.app",
     // origin: 'http://localhost:3000',
-    origin: 'https://christian-my-brand.netlify.app/',
+    origin: 'https://christian-my-brand.netlify.app',
     credentials: true
   })
 );
