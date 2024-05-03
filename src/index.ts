@@ -13,14 +13,18 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
-app.use(
-  cors({
-    // origin: "https://my-brand-christian.netlify.app",
-    // origin: 'http://localhost:3000',
-    origin: 'https://christian-my-brand.netlify.app',
-    credentials: true
-  })
-);
+const allowedOrigins = [
+  'https://my-brand-christian.netlify.app',
+  'http://localhost:3000',
+  'https://christian-my-brand.netlify.app'
+];
+
+const corsOptions = {
+  origin: allowedOrigins,
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.use(cookieParser());
